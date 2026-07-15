@@ -4,15 +4,16 @@ import pygame as pg
 
 from constants import WIDTH, HEIGHT, FPS
 from objects import Bird, Wall, Enemy, Barrel
-from ui import Score, Timer
+from ui import Score, Timer, Life
 from utils import score_screen, game_end
-from scene import TitleScene,HowScene
+from scene import TitleScene, HowScene, ClearScene
 
 def main():
     screen = pg.display.set_mode((WIDTH, HEIGHT))
 
     title = TitleScene()
     how = HowScene()
+    clear =  ClearScene()
 
     while True:
         result = title.run(screen)
@@ -30,13 +31,33 @@ def main():
         elif result == "exit":
             return 0
     
-    stage = 2
+    stage_score = []
 
-    while stage <= 10:
-        result = game(screen, stage)
+    stage = 1
+
+    while stage <= 3:
+        result, point = game(screen, stage)
 
         if result == "clear":
-            stage += 1
+            stage_score.append(point)
+            print("クリア", stage_score)
+            result = clear.run(screen, stage)
+            print("ClearScore結果:", result)
+
+            if result == "next":
+                stage += 1
+
+                if stage > 3:
+                    #最終結果画面
+                    clear.result(screen, stage_score)
+                    return 0
+            
+            elif result == "home":
+                return main()
+            
+            elif result == "exit":
+                return 0
+            
         
         elif result == "gameover":
             return 0
@@ -49,6 +70,7 @@ def game(screen, stage):
     clock = pg.time.Clock()
     bird = Bird((100, 605))  #100 605
     score = Score()
+    life = Life()
     hashigo = pg.transform.rotozoom(pg.image.load(f"fig/hashigo4.png"), 0, 0.085)  # 梯子を獲得
     takara = pg.transform.rotozoom(pg.image.load(f"fig/takara.png"), 0, 0.05)  # 宝を獲得
     takara_rect = takara.get_rect()
@@ -79,7 +101,7 @@ def game(screen, stage):
     tmr1 = 0
     tmr2 = 0 
     timer = Timer()  
-    it = 200 #樽の間隔200
+    it = 10000 #樽の間隔200
 
     #ステージの梯子
     if stage == 1:
@@ -197,10 +219,19 @@ def game(screen, stage):
 
         for i, taru1 in enumerate(tarus):  # 樽とあたったら終了
             if taru1.rct.colliderect(bird.rct):
-                score_screen("a", score.value, screen, timer.value)
-                return "gameover"
+                life.damage()
+
+                #樽を消す
+                taru1.kill()
+
+                #ライフ0なら終了
+                if life.value <= 0:
+                    score_screen("a", score.value, screen, timer.value)
+                    return "gameover"
         if takara_rect.colliderect(bird.rct):
-            return "clear"
+            score.value += 500
+            score.value += life.value * 100
+            return "clear", score.value
         if tmr2 == it:  # 100~250フレーム(2~5秒)に1回，ゴリラの攻撃(樽)を出現させる
             if stage == 1:
                 direction = 1
@@ -222,6 +253,7 @@ def game(screen, stage):
         bird.update(key_lst, screen, ladder_rects)
         score.update(screen)
         timer.update(screen)
+        life.draw(screen)
         pg.display.update()
         tmr1 += 1
         tmr2 += 1

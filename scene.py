@@ -231,3 +231,75 @@ class HowScene:
             pg.display.flip()
 
             clock.tick(60)
+
+class ClearScene:
+    def __init__(self):
+        self.font = pg.font.Font(None, 70)
+        self.small_font = pg.font.Font(None, 40)
+
+    def run(self, screen, stage):
+
+        while True:
+            screen.fill((0,0,0))
+
+            clear_text = self.font.render(
+                "STAGE CLEAR",
+                True,
+                (255,255,255)
+            )
+
+            stage_text = self.small_font.render(
+                f"STAGE {stage}",
+                True,
+                (255,255,255)
+            )
+
+            next_text = self.small_font.render(
+                "N : Next Stage",
+                True,
+                (255,255,255)
+            )
+
+            home_text = self.small_font.render(
+                "H : Home",
+                True,
+                (255,255,255)
+            )
+
+
+            screen.blit(
+                clear_text,
+                (WIDTH//2-180,150)
+            )
+
+            screen.blit(
+                stage_text,
+                (WIDTH//2-70,250)
+            )
+
+            screen.blit(
+                next_text,
+                (WIDTH//2-120,350)
+            )
+
+            screen.blit(
+                home_text,
+                (WIDTH//2-80,420)
+            )
+
+
+            for event in pg.event.get():
+
+                if event.type == pg.QUIT:
+                    return "exit"
+
+                if event.type == pg.KEYDOWN:
+
+                    if event.key == pg.K_n:
+                        return "next"
+
+                    if event.key == pg.K_h:
+                        return "home"
+
+
+            pg.display.update()
