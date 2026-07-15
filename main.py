@@ -34,7 +34,7 @@ def main():
     
     stage_score = []
 
-    stage = 3
+    stage = 1
 
     while stage <= 3:
         result, point = game(screen, stage)
