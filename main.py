@@ -36,13 +36,11 @@ def main():
     stage = 1
 
     while stage <= 3:
-        result, point = game(screen, stage)
+        result= game(screen, stage)
 
         if result == "clear":
-            stage_score.append(point)
-            print("クリア", stage_score)
+            #stage_score.append(point)
             result = clear.run(screen, stage)
-            print("ClearScore結果:", result)
 
             if result == "next":
                 stage += 1
@@ -60,7 +58,9 @@ def main():
             
         
         elif result == "gameover":
-            return 0
+            result = game_end(screen, "Game Over", (255, 0, 0))
+            if result == "title":
+                return main()
 
 
 def game(screen, stage):
@@ -101,7 +101,7 @@ def game(screen, stage):
     tmr1 = 0
     tmr2 = 0 
     timer = Timer()  
-    it = 10000 #樽の間隔200
+    it = 10 #樽の間隔200
 
     #ステージの梯子
     if stage == 1:
