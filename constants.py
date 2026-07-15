@@ -1,0 +1,3 @@
+WIDTH = 663
+HEIGHT = 663
+FPS = 50
