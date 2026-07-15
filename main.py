@@ -6,7 +6,7 @@ from constants import WIDTH, HEIGHT, FPS
 from objects import Bird, Wall, Enemy, Barrel
 from ui import Score, Timer, Life
 from utils import score_screen, game_end
-from scene import TitleScene, HowScene, ClearScene
+from scene import TitleScene, HowScene, ClearScene, ResultScene
 
 def main():
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -14,6 +14,7 @@ def main():
     title = TitleScene()
     how = HowScene()
     clear =  ClearScene()
+    result_scene = ResultScene()
 
     while True:
         result = title.run(screen)
@@ -33,23 +34,22 @@ def main():
     
     stage_score = []
 
-    stage = 1
+    stage = 3
 
     while stage <= 3:
-        result= game(screen, stage)
+        result, point = game(screen, stage)
 
         if result == "clear":
-            #stage_score.append(point)
+            stage_score.append(point)
+            if stage == 3:
+                result_scene.run(screen, stage_score)
+                return 0
             result = clear.run(screen, stage)
+
 
             if result == "next":
                 stage += 1
 
-                if stage > 3:
-                    #最終結果画面
-                    clear.result(screen, stage_score)
-                    return 0
-            
             elif result == "home":
                 return main()
             
@@ -80,7 +80,7 @@ def game(screen, stage):
     elif stage == 2:
         takara_rect.center = (445,65)
     elif stage == 3:
-        takara_rect.center = (360,40)
+        takara_rect.center = (360,65)
     
     #ゴリラの配置場所
     if stage == 1:
@@ -101,7 +101,7 @@ def game(screen, stage):
     tmr1 = 0
     tmr2 = 0 
     timer = Timer()  
-    it = 10 #樽の間隔200
+    it = 10000 #樽の間隔200
 
     #ステージの梯子
     if stage == 1:
@@ -191,7 +191,7 @@ def game(screen, stage):
         key_lst = pg.key.get_pressed()
         for event in pg.event.get():
             if event.type == pg.QUIT:
-                return 0
+                return "exit", 0
 
         screen.blit(bg_img, [0, 0])
         screen.blit(takara, takara_rect)
@@ -227,7 +227,7 @@ def game(screen, stage):
                 #ライフ0なら終了
                 if life.value <= 0:
                     score_screen("a", score.value, screen, timer.value)
-                    return "gameover"
+                    return "gameover", score.value
         if takara_rect.colliderect(bird.rct):
             score.value += 500
             score.value += life.value * 100
@@ -245,7 +245,7 @@ def game(screen, stage):
         if gorilla.rct.colliderect(bird.rct):  # ゴリラとあたったら終了
             score_screen("a", score.value, screen, timer.value)
             game_end(screen, "Game Over", (255, 0, 0)) #oキーを押すとゲームオーバー
-            return 0 
+            return "gameover", score.value 
         
         tarus.update(screen)
         screen.blit(gorilla.image, gorilla.rct)
@@ -263,7 +263,7 @@ def game(screen, stage):
         if timer.value < 0:
             score_screen("a", score.value, screen, timer.value)
             game_end(screen, "Game Over", (255, 0, 0)) #oキーを押すとゲームオーバー
-            return 0
+            return "gameover", score.value
 
         clock.tick(FPS)
 

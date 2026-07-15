@@ -303,3 +303,78 @@ class ClearScene:
 
 
             pg.display.update()
+
+class ResultScene:
+    def __init__(self):
+        self.font = pg.font.Font(None, 50)
+
+    def run(self, screen, stage_score):
+
+        while True:
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    return "exit"
+
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_RETURN:
+                        return "exit"
+
+
+            screen.fill((0,0,0))
+
+
+            title = self.font.render(
+                "RESULT",
+                True,
+                (255,255,255)
+            )
+
+            screen.blit(
+                title,
+                (250,80)
+            )
+
+
+            total = 0
+
+            for i, score in enumerate(stage_score):
+
+                text = self.font.render(
+                    f"STAGE {i+1} : {score}",
+                    True,
+                    (255,255,255)
+                )
+
+                screen.blit(
+                    text,
+                    (200,180+i*70)
+                )
+
+                total += score
+
+
+            total_text = self.font.render(
+                f"TOTAL : {total}",
+                True,
+                (255,255,0)
+            )
+
+            screen.blit(
+                total_text,
+                (200,430)
+            )
+
+
+            end = self.font.render(
+                "ENTER : END",
+                True,
+                (255,255,255)
+            )
+
+            screen.blit(
+                end,
+                (220,550)
+            )
+
+
+            pg.display.update()
