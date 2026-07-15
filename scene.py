@@ -7,11 +7,7 @@ from constants import WIDTH, HEIGHT
 class TitleScene:
     """ホーム画面"""
     def __init__(self):
-        self.bg = pg.transform.rotozoom(
-            pg.image.load("fig/back.webp"),
-            0,
-            1.3
-        )
+        self.bg = pg.transform.scale(pg.image.load("fig/back.webp"),(WIDTH, HEIGHT))
         self.gorilla = pg.transform.rotozoom(
             pg.image.load("fig/gorira.png"),  # Enemyが使っている画像名に合わせて変更
             0,
@@ -141,11 +137,7 @@ class HowScene:
 
     def __init__(self):
 
-        self.bg = pg.transform.rotozoom(
-            pg.image.load("fig/back.webp"),
-            0,
-            1.3
-        )
+        self.bg = pg.transform.scale(pg.image.load("fig/back.webp"),(WIDTH, HEIGHT))
 
         self.font_title = pg.font.Font("C:/Windows/Fonts/meiryo.ttc", 65)
         self.font_text = pg.font.Font("C:/Windows/Fonts/meiryo.ttc", 30)
