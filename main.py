@@ -101,7 +101,7 @@ def game(screen, stage):
     tmr1 = 0
     tmr2 = 0 
     timer = Timer()  
-    it = 10000 #樽の間隔200
+    it = 300 #樽の間隔200
 
     #ステージの梯子
     if stage == 1:
