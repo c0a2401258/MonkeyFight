@@ -200,14 +200,18 @@ def game(screen, stage):
 
 
         bird.sky_state = False
-        for i,wall in enumerate(walls):  # 床の情報を取得
-            if wall.rect.colliderect(bird.rct):  # 床のrectとこうかとんのrectのが重なっているのかの判定
-                # print(i)
-                if wall.wall_bound(bird.rct):  # 床にいるのか判定
-                    bird.jump_high = -4
-                    bird.jump_state = False
-                    bird.sky_state = True
-        
+
+        for wall in walls:
+            if (
+                wall.rect.colliderect(bird.rct)
+                and bird.rct.bottom <= wall.rect.top + 10
+            ):
+                bird.rct.bottom = wall.rect.top
+                bird.jump_high = -4.5
+                bird.jump_state = False
+                bird.sky_state = True     
+                bird.sky_high = 0
+
         for i, taru_x in enumerate(tarus):
             taru_x.sky_state = False
             for i,wall in enumerate(walls):  # 床の情報を取得

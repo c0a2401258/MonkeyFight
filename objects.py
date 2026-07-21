@@ -48,11 +48,13 @@ class Bird:
             self.rct.top <= lad.bottom
             for lad in ladder_rects
         )
+        
         if ladder_hit:
-            self.on_ladder = True
-        elif not key_lst[pg.K_UP]:
+            if key_lst[pg.K_UP] or key_lst[pg.K_DOWN]:
+                self.on_ladder = True
+        elif not ladder_hit:
             self.on_ladder = False
-
+            
         if self.on_ladder:
             #梯子の中での移動
             if key_lst[pg.K_LEFT]:
@@ -70,6 +72,9 @@ class Bird:
             self.sky_state = True
             self.sky_high = 0
             self.jump_high = -1
+
+            if not ladder_hit:
+                self.on_ladder = False
         
         else:
             # 横移動と画像切替（通常どおり）
