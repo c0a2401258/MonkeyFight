@@ -222,7 +222,8 @@ def game(screen, stage):
 
 
         for i, taru1 in enumerate(tarus):  # 樽とあたったら終了
-            if taru1.rct.colliderect(bird.rct):
+            hitbox = taru1.rct.inflate(-20, -20)
+            if hitbox.colliderect(bird.rct):
                 life.damage()
 
                 #樽を消す
